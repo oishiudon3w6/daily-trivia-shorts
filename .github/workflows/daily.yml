@@ -1,0 +1,38 @@
+
+name: Daily Trivia Shorts
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 5 * * *'
+      timezone: Asia/Tokyo
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          pip install -r requirements.txt
+
+      - name: Generate video
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python generate.py
+
+      - name: Save video
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-trivia-video
+          path: output/*.mp4
+          retention-days: 7
