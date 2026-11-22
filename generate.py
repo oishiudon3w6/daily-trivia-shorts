@@ -24,7 +24,7 @@ def fetch_script():
     prompt=f'''あなたは日本語の科学雑学編集者。{DATE}用、ジャンル{category}。以下の条件を厳守。必ずJSONのみ返答。
 事実としてよく確立した身近で意外な豆知識を1つ選び、誇張しない。毎日の変化のため題材の候補は日付を種に変える。出典は必ず公式の一次情報または公的機関の「実在が確実なトップレベルURL」だけを提示し、未確認の詳細URLは作らない。これは公開前に人間が検証するドラフト。
 JSON形式: {{"title":"35文字以内","narration":"自然な日本語で160〜210文字、句点を使い6〜9文、冒頭で疑問を投げかけ最後に結論","fact_check":"公開前に確認すべき中心主張","source_urls":["https://..."],"description":"短い概要欄","hashtags":["#雑学","#科学"]}}'''
-    url='https://generativelanguage.googleapis.com/v1beta/models/'+os.getenv('GEMINI_MODEL','gemini-2.5-flash')+':generateContent'
+    url='https://generativelanguage.googleapis.com/v1beta/models/'+os.getenv('GEMINI_MODEL','gemini-3.5-flash-lite')+':generateContent'
     r=requests.post(url,params={'key':key},json={'contents':[{'parts':[{'text':prompt}]}],'generationConfig':{'responseMimeType':'application/json','temperature':0.85}},timeout=70)
     if not r.ok: raise RuntimeError(f'Gemini API returned {r.status_code}: {r.text[:400]}')
     raw=r.json()['candidates'][0]['content']['parts'][0]['text']
